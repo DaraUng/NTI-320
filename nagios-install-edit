@@ -1,0 +1,3 @@
+ cd /etc/nagios
+ wget https://raw.githubusercontent.com/nic-instruction/NTI-320/
+master/automation/generate_config.sh
