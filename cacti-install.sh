@@ -1,12 +1,18 @@
+#!/bin/bash
+
+#install cacti and mariadb-server.
 yum -y install cacti               # Installes a number of packages, including mariadb, httpd, php and so on
 yum -y install mariadb-server         # The mysql/mariadb client installs with the cacti stack but not the server
                                    # If you want to have multiple cacti nodes, considder using the client and connecting
                                    # to another server
-                                   
+                 
+#instal the php-process & php-gh 
+#There is an additional code for the php in the web-a-continues
 yum -y install php-process php-gd php mod_php
 yum -y install net-snmp net-snmp-utils                                   
-                    
-systemctl enable mariadb           # Enable db, apache and snmp (not cacti yet)
+
+#Enable mariadb, httpd and snmpd
+systemctl enable mariadb           
 systemctl enable httpd
 systemctl enable snmpd
 
@@ -15,15 +21,17 @@ systemctl start mariadb           # Start db, apache and snmp (not cacti yet)
 systemctl start httpd
 systemctl start snmpd
 
-mysqladmin -u root password P@ssw0rd1                               # Set your mysql/mariadb pasword.  here *** is your password
+mysqladmin -u root password P@ssw0rd1                               # Set your mysql/mariadb pasword.  here P@ssw0rd1 is your password
                                                                     # Make a sql script to create a cacti db and grant the cacti user access to it
 
-mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -pP@ssw0rd1 mysql    # Transfer your local timezone info to mysql
+mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p P@ssw0rd1 mysql    # Transfer your local timezone info to mysql
 
+# Set this to somthing better than 'cactipass'
+# Added to fix a timezone issue
 echo "create database cacti;
-GRANT ALL ON cacti.* TO cacti@localhost IDENTIFIED BY 'P@ssw0rd1';  # Set this to somthing better than 'cactipass'
+GRANT ALL ON cacti.* TO cacti@localhost IDENTIFIED BY 'P@ssw0rd1';  
 FLUSH privileges;
-GRANT SELECT ON mysql.time_zone_name TO cacti@localhost;            # Added to fix a timezone issue
+GRANT SELECT ON mysql.time_zone_name TO cacti@localhost;           
 flush privileges;" > stuff.sql
 
 
@@ -48,6 +56,7 @@ sed -i "s/\$database_password = 'cactiuser';/\$database_password = 'P@ssw0rd1';/
 cp /etc/php.ini /etc/php.ini.orig
 sed -i 's/;date.timezone =/date.timezone = America\/Regina/' /etc/php.ini
 
+#restart the httpd.servicee
 systemctl restart httpd.service
 
 # Set up the cacti cron
