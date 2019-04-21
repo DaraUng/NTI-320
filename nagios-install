@@ -51,3 +51,8 @@ dd if=/dev/zero of=/swap bs=1024 count=2097152
 mkswap /swap && chown root. /swap && chmod 0600 /swap && swapon /swap
 echo /swap swap swap defaults 0 0 >> /etc/fstab
 echo vm.swappiness = 0 >> /etc/sysctl.conf && sysctl -p
+
+#pulling the raw file from nicole site on the github. 
+ cd /etc/nagios
+ wget https://raw.githubusercontent.com/nic-instruction/NTI-320/
+master/automation/generate_config.sh
