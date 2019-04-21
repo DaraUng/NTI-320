@@ -1,3 +1,4 @@
+#pulling the raw file from nicole site on the github. 
  cd /etc/nagios
  wget https://raw.githubusercontent.com/nic-instruction/NTI-320/
 master/automation/generate_config.sh
