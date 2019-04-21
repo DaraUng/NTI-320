@@ -4,10 +4,12 @@ yum -y install httpd
 systemctl enable httpd
 systemctl start httpd
 
+#install the net-snmp utils
 yum -y install net-snmp net-snmp-utils
 
 
 # create a new snmpd.conf
+# move snmpd.conf to snmpd.orig
 mv /etc/snmp/snmpd.conf /etc/snmp/snmpd.conf.orig
 touch /etc/snmp/snmpd.conf
 
