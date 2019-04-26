@@ -1,6 +1,6 @@
 #!/bin/bash   
-min nagios install 
-(this is for the first week of configuration.  We will be compiling from source later in the quarter)
+#min nagios install 
+#(this is for the first week of configuration.  We will be compiling from source later in the quarter)
 
 #install enable and start the nagios program
 yum install nagios
@@ -44,7 +44,7 @@ systemctl restart nagios
 
 
 #verify
-/usr/sbin/nagios -v /etc/nagios/nagios.cfg
+#/usr/sbin/nagios -v /etc/nagios/nagios.cfg
 
 
 dd if=/dev/zero of=/swap bs=1024 count=2097152
@@ -54,5 +54,5 @@ echo vm.swappiness = 0 >> /etc/sysctl.conf && sysctl -p
 
 #pulling the raw file from nicole site on the github. 
  cd /etc/nagios
- wget https://raw.githubusercontent.com/nic-instruction/NTI-320/
-master/automation/generate_config.sh
+# wget https://raw.githubusercontent.com/nic-instruction/NTI-320/
+#master/automation/generate_config.sh
