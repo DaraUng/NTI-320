@@ -1,7 +1,7 @@
     
 #!/bin/bash
 bash generate_config.sh $1 $2
-gcloud compute scp $1.cfg dara_ung@nagios-install:/etc/nagios/servers
+gcloud compute scp ssh --zone us-east1-b $1.cfg dara_ung@nagios-install:/etc/nagios/servers
 usermod -a -G nagios dara_ung
 chmod 777 /etc/nagios/conf.d
 usermod -a -G nagios dara_ung
