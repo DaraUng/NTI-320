@@ -7,7 +7,7 @@ for servername in $(gcloud compute instances list | awk '{print $1}' | sed "1 d"
     bash scp_nagios web-a 10.150.0.5
 done
 
-gcloud compute ssh --zone us-east1-b dara_ung@nagios-install --command='sudo systemctl resstart nagios'
+gcloud compute ssh --zone us-east1-b dara_ung@nagios-install --command='sudo systemctl restart nagios'
 #awk is the last name initial for the writer.
 #awk is for colum
 #sed is for roll
