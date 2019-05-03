@@ -27,3 +27,5 @@ access myGroup    ""    any    noauth     exact    all    all    none' >> /etc/s
 # Enable snmp, Start snmp
 systemctl enable snmpd
 systemctl start snmpd
+
+#this is cacti client
