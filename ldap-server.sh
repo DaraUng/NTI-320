@@ -1,0 +1,278 @@
+#!/bin/bash
+#https://www.server-world.info/en/note?os=CentOS_7&p=openldap
+#This is a basis for students to create a fully functioning build, compile, and deploy script.
+
+#Install git and create a directory from the https link.
+yum install -y git
+cd /tmp
+
+#make a file copy from the link that link to github.
+git clone https://github.com/nic-instruction/hello-nti-310.git
+
+#install the openldap-server and clients. To enable the user to log on to the server from difference computer.
+yum -y install openldap-servers openldap-clients
+
+#copy the DB_config and change the owner of the files to run on ldap. Navigate through user/share/openldap-server
+cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG 
+#change ldap directory
+chown ldap. /var/lib/ldap/DB_CONFIG
+
+#systemctl is use for control the system and server.
+#systemctl enable and start the slapd.
+systemctl enable slapd
+systemctl start slapd
+
+#install the httpd,epel-release and phpldapadmin
+yum install httpd -y
+yum install epel-release -y
+yum install phpldapadmin -y
+#setsebool command allow the SELinux to talk with ladap.
+setsebool -P httpd_can_connect_ldap on
+
+systemctl enable httpd
+systemctl start httpd
+
+#sed is also known as the stream editor, it's use for search, find and replace. 
+#Search and replace require local through the path. /etc/httpd/conf.d/phpldapadmin.conf
+#allow everyone to have access.
+sed -i 's,Require local,#Require local\n Require all granted,g' /etc/httpd/conf.d/phpldapadmin.conf
+
+# decent config guide: http://www.itzgeek.com/how-tos/linux/centos-how-tos/install-configure-phpldapadmin-centos-7-ubuntu-16-04.html
+
+#Note: LDAP comes up completely insecure, with Anonymous login enabled by default... this is not a good and happy thing, so fix 
+#it in the config file
+#(prompt for user input), the following is currently a manual config, but could be automated fairly easily
+#slappasswd
+#open tcp port 389
+#
+
+#copy /tmp/hello-nti-310/config/config.php/etc/phpldapadmin/config.php and change the owndership to apache.
+cp /tmp/hello-nti-310/config/config.php /etc/phpldapadmin/config.php
+chown ldap:apache /etc/phpldapadmin/config.php
+
+#restart the servive.
+systemctl restart httpd.service
+
+#let the system talk to the user and let them know where the system is running and what it's doing.
+#echo the setences.
+echo "phpldapadmin is now up and running"
+echo "we are configuring ldap and ldapadmin"
+
+#Making new passwords and store them. Root it back to the ldap admin.
+#making password longer
+newsecret="P@ssw0rd1"
+newhash=$( slappasswd -s "$newsecret" )
+echo -n "$newsecret" > /root/ldap_admin_pass
+chmod 0660 /root/ldap_admin_pass
+
+#show the password from the dn.
+echo -e "dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+replace: olcSuffix
+olcSuffix: dc=nti310,dc=local
+\n
+#userid,domain controller, local.
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+replace: olcRootDN
+olcRootDN: cn=ldapadm,dc=nti310,dc=local
+\n
+#create new hash.
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+replace: olcRootPW
+olcRootPW: $newhash" > db.ldif
+
+ldapmodify -Y EXTERNAL -H ldapi:/// -f db.ldif
+
+# Restrict auth
+
+echo -e 'dn: olcDatabase={1}monitor,cn=config
+changetype: modify
+replace: olcAccess
+olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external, cn=auth" read by dn.base="cn=ldapadm,dc=nti310,dc=local" read by * none' > monitor.ldif
+
+ldapmodify -Y EXTERNAL  -H ldapi:/// -f monitor.ldif
+
+
+# Generate certs
+
+openssl req -new -x509 -nodes -out /etc/openldap/certs/nti310ldapcert.pem -keyout /etc/openldap/certs/nti310ldapkey.pem -days 365 -subj "/C=US/ST=WA/L=Seattle/O=SCC/OU=IT/CN=nti310.local"
+
+chown -R ldap. /etc/openldap/certs/nti*.pem
+
+# Use Certs in LDAP
+
+echo -e "dn: cn=config
+changetype: modify
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/openldap/certs/nti310ldapcert.pem
+\n
+dn: cn=config
+changetype: modify
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/openldap/certs/nti310ldapkey.pem" > certs.ldif
+
+ldapmodify -Y EXTERNAL  -H ldapi:/// -f certs.ldif
+
+# Test cert configuration to find out where they are located.
+#test to see if they are working.
+
+slaptest -u
+echo "it works"
+
+unalias cp
+
+
+ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/cosine.ldif
+ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/nis.ldif 
+ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/inetorgperson.ldif
+
+
+# Create base group and people structure
+
+echo -e "dn: dc=nti310,dc=local
+dc: nti310
+objectClass: top
+objectClass: domain
+\n
+dn: cn=ldapadm,dc=nti310,dc=local
+objectClass: organizationalRole
+cn: ldapadm
+description: LDAP Manager
+\n
+dn: ou=People,dc=nti310,dc=local
+objectClass: organizationalUnit
+ou: People
+\n
+dn: ou=Group,dc=nti310,dc=local
+objectClass: organizationalUnit
+ou: Group" > base.ldif
+
+ldapadd -x -W -D "cn=ldapadm,dc=nti310,dc=local" -f base.ldif -y /root/ldap_admin_pass
+
+#Generate 2 difference groups under the name xmen and knd.
+echo -e "# LDIF Export for cn=apple,ou=Group,dc=nti310,dc=local
+# Server: NTI-310 Example LDAP Server (127.0.0.1)
+# Search Scope: base
+# Search Filter: (objectClass=*)
+# Total Entries: 1
+#
+# Generated by phpLDAPadmin (http://phpldapadmin.sourceforge.net) on January 25, 2019 3:56 am
+# Version: 1.2.3
+\n
+version: 1
+\n
+# Entry 1: cn=xmen,ou=Group,dc=nti310,dc=local
+dn: cn=xmen,ou=Group,dc=nti310,dc=local
+cn: xmen
+gidnumber: 503
+objectclass: posixGroup
+objectclass: top
+\n
+# Entry 2: cn=knd,ou=Group,dc=nti310,dc=local
+dn: cn=knd,ou=Group,dc=nti310,dc=local
+cn: knd
+gidnumber: 504
+objectclass: posixGroup
+objectclass: top" > /tmp/create_group.ldif
+
+ldapadd -x -W -D "cn=ldapadm,dc=nti310,dc=local" -f /tmp/create_group.ldif -y /root/ldap_admin_pass
+
+#Generate poeple with first and last name. In people categoria.
+echo -e "# LDIF Export for cn=bee yellow,ou=People,dc=nti310,dc=local
+# Server: NTI-310 Example LDAP Server (127.0.0.1)
+# Search Scope: base
+# Search Filter: (objectClass=*)
+# Total Entries: 1
+#
+# Generated by phpLDAPadmin (http://phpldapadmin.sourceforge.net) on January 25, 2019 2:58 am
+# Version: 1.2.3
+\n
+version: 1
+\n
+#People that are generated with difference cd, Gidnumber and given name from 1 to 5 diferent entries.
+# Entry 1: cn=bee pink,ou=People,dc=nti310,dc=local
+dn: cn=bee pink,ou=People,dc=nti310,dc=local
+cn: bee pink
+gidnumber: 500
+givenname: bee
+homedirectory: /home/bpink
+loginshell: /bin/sh
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: pink
+uid: bpink
+uidnumber: 1001
+userpassword: {SHA}ltAmXYUACD6yt/5yUplqmTJzQeQ=
+\n
+# Entry 2: cn=bee red,ou=People,dc=nti310,dc=local
+dn: cn=bee red,ou=People,dc=nti310,dc=local
+cn: bee red
+gidnumber: 500
+givenname: bee
+homedirectory: /home/bred
+loginshell: /bin/sh
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: red
+uid: bred
+uidnumber: 1002
+userpassword: {SHA}ltAmXYUACD6yt/5yUplqmTJzQeQ=
+\n
+# Entry 3: cn=bee black,ou=People,dc=nti310,dc=local
+dn: cn=bee black,ou=People,dc=nti310,dc=local
+cn: bee black
+gidnumber: 500
+givenname: bee
+homedirectory: /home/bblack
+loginshell: /bin/sh
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: black
+uid: bblack
+uidnumber: 1003
+userpassword: {SHA}ltAmXYUACD6yt/5yUplqmTJzQeQ=
+\n
+# Entry 4: cn=bee blue,ou=People,dc=nti310,dc=local
+dn: cn=bee blue,ou=People,dc=nti310,dc=local
+cn: bee blue
+gidnumber: 500
+givenname: bee
+homedirectory: /home/bblue
+loginshell: /bin/sh
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: blue
+uid: bblue
+uidnumber: 1004
+userpassword: {SHA}ltAmXYUACD6yt/5yUplqmTJzQeQ=
+\n
+# Entry 5: cn=bee white,ou=People,dc=nti310,dc=local
+dn: cn=bee white,ou=People,dc=nti310,dc=local
+cn: bee white
+gidnumber: 500
+givenname: bee
+homedirectory: /home/bwhite
+loginshell: /bin/sh
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: white
+uid: bwhite
+uidnumber: 1005
+userpassword: {SHA}ltAmXYUACD6yt/5yUplqmTJzQeQ=" > /tmp/apple.ldif
+
+#turn off the SELinux to test
+setenforce 0
+
+#autheticate this user and build specification from imported /tmp/apple.ldif
+#authenticate the source from previously created password w -y
+ldapadd -x -W -D "cn=ldapadm,dc=nti310,dc=local" -f /tmp/apple.ldif -y /root/ldap_admin_pass
+
+#restart the system.
+systemctl restart httpd
