@@ -1,6 +1,6 @@
 #!/bin/bash
 
-git clone https://github.com/DaraUng/hello-nti-310
+git clone https://github.com/DaraUng/NTI-320
 
 echo "creating cacti"
 #cacti
