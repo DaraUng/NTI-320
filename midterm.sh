@@ -55,7 +55,7 @@ gcloud compute instances create ldap-server \
 --tags "http-server","https-server" \
 --machine-type f1-micro \
 --scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/ldap-server
+--metadata-from-file startup-script=NTI-320/ldap-server.sh
 
 echo "creating nfs-a"
 #NSF-a
@@ -66,7 +66,7 @@ gcloud compute instances create nfs-a \
 --tags "http-server","https-server" \
 --machine-type f1-micro \
 --scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/nfs_a
+--metadata-from-file startup-script=NTI-320/nfs_a.sh
 
 echo "creating django"
 #Django
@@ -77,7 +77,7 @@ gcloud compute instances create django \
 --tags "http-server","https-server" \
 --machine-type f1-micro \
 --scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/django
+--metadata-from-file startup-script=NTI-320/django.sh
 
 echo "creating client-c"
 #LDAP
