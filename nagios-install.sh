@@ -27,7 +27,7 @@ yum install nagios-plugins-nrpe
 htpasswd -b -c /etc/nagios/passwd nagiosadmin nagiosadmin
 
 #set the nagios to read and write
-chmod 666 /var/log/nagios/nagios.log 
+chmod 777 /var/log/nagios/nagios.log 
 
 mkdir /etc/nagios/servers
 
