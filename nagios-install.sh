@@ -31,6 +31,8 @@ chmod 777 /var/log/nagios/nagios.log
 
 mkdir /etc/nagios/servers
 
+chmod 777 var/nagios/servers
+
 #uncommand the line to enable nagios.cfg
 sed -i '51 s/^#//' /etc/nagios/nagios.cfg  # Courtesey of Chuan
 echo "define command{
