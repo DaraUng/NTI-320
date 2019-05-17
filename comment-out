@@ -17,17 +17,17 @@ sed -i "s,command[check_hda1]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10%
 systemctl restart nrpe
 
 #Insert and change the command line. 
-sed -i 's,#command\[check_users\]=/usr/lib64/nagios/plugins/check_users\$ARG\$,commannd\[check_users\]=/usr/lib64/nagios/plugins/check_users -w 5 -c 10,g' nrpe.cfg
+sed -i 's,#command\[check_users\]=/usr/lib64/nagios/plugins/check_users \$ARG\$,commannd\[check_users\]=/usr/lib64/nagios/plugins/check_users -w 5 -c 10,g' /etc/nagios/nrpe.cfg
 
-sed -i 's,#command\[check_load\]=/usr/lib64/nagios/plugins/check_load\$ARG\$,commannd\[check_load\]=/usr/lib64/nagios/plugins/check_load -w 15,10,5 -c 30,25,20,g' nrpe.cfg
+sed -i 's,#command\[check_load\]=/usr/lib64/nagios/plugins/check_load \$ARG\$,commannd\[check_load\]=/usr/lib64/nagios/plugins/check_load -w 15,10,5 -c 30,25,20,g' /etc/nagios/nrpe.cfg
 
-sed -i 's,#command\[check_disk\]=/usr/lib64/nagios/plugins/check_disk\$ARG\$,commannd\[check_disk\]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10%,g' nrpe.cfg
+sed -i 's,#command\[check_disk\]=/usr/lib64/nagios/plugins/check_disk \$ARG\$,commannd\[check_disk\]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10%,g' /etc/nagios/nrpe.cfg
 
-sed -i 's,#command\[check_swap\]=/usr/lib64/nagios/plugins/check_swap\$ARG\$,commannd\[check_swap\]=/usr/lib64/nagios/plugins/check_swap -w 20% -c 10%,g' nrpe.cfg
+sed -i 's,#command\[check_swap\]=/usr/lib64/nagios/plugins/check_swap \$ARG\$,commannd\[check_swap\]=/usr/lib64/nagios/plugins/check_swap -w 20% -c 10%,g' /etc/nagios/nrpe.cfg
 
-sed -i 's,#command\[check_cpu_stats\]=/usr/lib64/nagios/plugins/check_cpu_stats.sh\$ARG\$,commannd\[check_cpu_stats\]=/usr/lib64/nagios/plugins/check_cpu_stats.sh -w 70,40,30, -c 90,50,40,g' nrpe.cfg
+sed -i 's,#command\[check_cpu_stats\]=/usr/lib64/nagios/plugins/check_cpu_stats.sh \$ARG\$,commannd\[check_cpu_stats\]=/usr/lib64/nagios/plugins/check_cpu_stats.sh -w 70,40,30, -c 90,50,40,g' /etc/nagios/nrpe.cfg
 
-sed -i 's,#command\[check_mem\]=/usr/lib64/nagios/plugins/check_mem.sh\$ARG\$,commannd\[check_mem\]=/usr/lib64/nagios/plugins/check_mem.sh -w 80 -c 90,g' nrpe.cfg
+sed -i 's,#command\[check_mem\]=/usr/lib64/nagios/plugins/check_mem.sh \$ARG\$,commannd\[check_mem\]=/usr/lib64/nagios/plugins/check_mem.sh -w 80 -c 90,g' /etc/nagios/nrpe.cfg
 
 #what it should look like.
 #command[check_users]=/usr/lib64/nagios/plugins/check_users -w 5 -c 10
