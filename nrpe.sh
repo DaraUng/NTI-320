@@ -11,7 +11,7 @@ systemctl enable nrpe
 systemctl start nrpe
 
 #make sure to change the ip to the server ipaddress.
-sed -i 's/allowed_hosts=127.0.0.1/allowed_hosts=127.0.0.1, 10.138.15.217/g' /etc/nagios/nrpe.cfg
+sed -i 's/allowed_hosts=127.0.0.1/allowed_hosts=127.0.0.1, 10.138.0.13/g' /etc/nagios/nrpe.cfg
 sed -i "s,command[check_hda1]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /dev/hda1,command[check_disk]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /dev/sda1,g" /etc/nagios/nrpe.cfg
 
 sed -i 's,#command\[check_users\]=/usr/lib64/nagios/plugins/check_users \$ARG1\$,commannd\[check_users\]=/usr/lib64/nagios/plugins/check_users -w 5 -c 10,g' /etc/nagios/nrpe.cfg
