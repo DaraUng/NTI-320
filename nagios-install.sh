@@ -35,10 +35,10 @@ chmod 777 /etc/nagios/servers
 
 #uncommand the line to enable nagios.cfg
 sed -i '51 s/^#//' /etc/nagios/nagios.cfg  # Courtesey of Chuan
-echo "define command{
+echo 'define command{
                                 command_name check_nrpe
                                 command_line /usr/lib64/nagios/plugins/check_nrpe -H $HOSTADDRESS$ -c $ARG1$
-                                }" >> /etc/nagios/objects/commands.cfg
+                                }' >> /etc/nagios/objects/commands.cfg
 systemctl restart nagios
 
 #Further configuration:
