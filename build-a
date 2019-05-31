@@ -1,0 +1,30 @@
+#!/bin/bash
+
+yum -y install rpm-build make gcc git 
+
+mkdir -p /root/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}               #make the parent in the rpmbuild. Build,rpms,sources,specs, srpms
+ 
+cd ~/
+ 
+echo '%_topdir %(echo $HOME)/rpmbuild' > ~/.rpmmacros
+ 
+cd ~/rpmbuild/SOURCES
+git clone https://github.com/nic-instruction/NTI-320.git
+
+rm -rf nrpe/
+
+cp NTI-320/rpm-info/hello_world_from_source/helloworld-0.1.tar.gz .
+
+cp NTI-320/rpm-info/hello_world_from_source/helloworld.sh .
+cp NTI-320/rpm-info/hello_world_from_source/hello.spec .
+mv hello.spec ../SPECS/
+rpmbuild -v -bb --clean SPECS/hello.spec 
+ls -l RPMS/x86_64/helloworld-0.1-1.el7.x86_64.rpm
+
+yum -y install RPMS/x86_64/helloworld-0.1-1.el7.x86_64.rpm 
+ls -l /etc/yum.repos.d/
+vim /etc/yum.repos.d/epel.repo
+
+cp /root/rpmbuild/RPMS/x86_64/helloworld-0.1-1.el7.x86_64.rpm /home/dara_ung/
+chown dara_ung /home/dara_ung/helloworld-0.1-1.el7.x86_64.rpm 
+
