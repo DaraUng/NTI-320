@@ -7,7 +7,7 @@ mkdir -p /root/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}                      # 
 cd ~/
 echo '%_topdir %(echo $HOME)/rpmbuild' > ~/.rpmmacros                         # Set the rpmbuild path in an .rpmmacros file
 cd ~/rpmbuild/SOURCES
-git clone https://github.com/NagiosEnterprises/nrpe.git                       # Get the nrpe source from github
+git clone https://github.com/DaraUng/NTI-320/blob/master/nrpe.sh.git                       # Get the nrpe source from github
 git clone https://github.com/NagiosEnterprises/nagioscore.git                 # Get the nagios source from github
 
 tar -czvf nrpe-3.1.tar.gz /root/rpmbuild/SOURCES/nrpe                         # Tar up the source (needed to create an RPM)
