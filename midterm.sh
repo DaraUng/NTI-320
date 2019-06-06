@@ -66,7 +66,7 @@ gcloud compute instances create nfs \
 --tags "http-server","https-server" \
 --machine-type f1-micro \
 --scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/nfs_a.sh
+--metadata-from-file startup-script=NTI-320/nfs.sh
 
 echo "creating django"
 #Django
