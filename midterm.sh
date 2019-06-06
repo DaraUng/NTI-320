@@ -59,7 +59,7 @@ gcloud compute instances create ldap-server \
 
 echo "creating nfs-a"
 #NSF-a
-gcloud compute instances create nfs-a \
+gcloud compute instances create nfs \
 --image-family centos-7 \
 --image-project centos-cloud \
 --zone us-west1-b \
@@ -78,6 +78,18 @@ gcloud compute instances create django \
 --machine-type f1-micro \
 --scopes cloud-platform \
 --metadata-from-file startup-script=NTI-320/django.sh
+
+echo "creating rsyslog"
+#rsyslog
+gcloud compute instances create rsyslog \
+--image-family centos-7 \
+--image-project centos-cloud \
+--zone us-west1-b \
+--tags "http-server","https-server" \
+--machine-type f1-micro \
+--scopes cloud-platform \
+--metadata-from-file startup-script=NTI-320/rsyslog.sh
+
 
 echo "creating client-c"
 #LDAP
