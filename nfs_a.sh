@@ -22,7 +22,7 @@ echo "/var/nfsshare/home_dirs *(rw,sync,no_all_squash)
 /var/nfsshare/devstuff *(rw,sync,no_all_squash)
 /var/nfsshare/testing *(rw,sync,no_all_squash)" >> /etc/exports
 
-systemctl restart nf-server
+systemctl restart nfs
 #install net tools to get ifconfig
 yum -y install net-tools
 
@@ -33,7 +33,3 @@ From the client (ubuntu machine)
 apt-get install nfs-client
 
 showmount -e $ipaddress # where $ipaddress is the ip of your nfs server
-mkdir /mnt/test
-echo "10.128.0.4:/var/nfsshare/testing          /mnt/test     nfs     defaults 0  0">> /etc/fstab
-mount -a
-*profit*
