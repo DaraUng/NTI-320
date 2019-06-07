@@ -2,6 +2,18 @@
 
 git clone https://github.com/DaraUng/NTI-320
 
+echo "creating reposrv"
+#reposrv
+gcloud compute instances create reposrv \
+--image-family centos-7 \
+--image-project centos-cloud \
+--zone us-west1-b \
+--tags "http-server","https-server" \
+--machine-type f1-micro \
+--scopes cloud-platform \
+--metadata-from-file startup-script=NTI-320/reposrv.sh
+--private-network-ip=10.128.0.5
+
 echo "creating cacti"
 #cacti
 gcloud compute instances create cacti-install \
@@ -101,3 +113,6 @@ gcloud compute instances create client-c \
 --machine-type f1-micro \
 --scopes cloud-platform \
 --metadata-from-file startup-script=NTI-320/LDAP\ Client\ Automation      
+
+
+
