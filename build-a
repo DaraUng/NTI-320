@@ -1,8 +1,10 @@
 #!/bin/bash
 
 yum -y install rpm-build make gcc git       
+# Gcc is a compiler system produced by the GNU Project supporting various programming languages.
 
-mkdir -p /root/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}               #Install the rpmbuild and making parents as follow. Build,rpms,sources,specs, srpms
+mkdir -p /root/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}              
+#Install the rpmbuild and making parents as follow. Build,rpms,sources,specs, srpms
  
 cd ~/            
  
@@ -11,21 +13,28 @@ cd ~/rpmbuild/SOURCES
 git clone https://github.com/nic-instruction/NTI-320.git               #Get clone from the nicole githup as the reserouce.(Might need to change for my own source)
 
 rm -rf nrpe/
+#remove nrpe
 
-cp NTI-320/rpm-info/hello_world_from_source/helloworld-0.1.tar.gz .  #copy the helloworld-0.1.tar.gz, helloworld.sh, hello. spec and move it to specs.
-
+cp NTI-320/rpm-info/hello_world_from_source/helloworld-0.1.tar.gz .  
 cp NTI-320/rpm-info/hello_world_from_source/helloworld.sh .           
 cp NTI-320/rpm-info/hello_world_from_source/hello.spec .
 mv hello.spec ../SPECS/
+
 rpmbuild -v -bb --clean SPECS/hello.spec 
 
+#line 19-22 copy both files and move them into ../SPECS/ and after remove the file.
+#copy the helloworld-0.1.tar.gz, helloworld.sh, hello. spec and move it to specs.
 
 #ls -l RPMS/x86_64/helloworld-0.1-1.el7.x86_64.rpm to see if the helloworld file exist.
 
-yum -y install RPMS/x86_64/helloworld-0.1-1.el7.x86_64.rpm  #install helloworld
-#ls -l /etc/yum.repos.d/                             #ls to see the repos
+yum -y install RPMS/x86_64/helloworld-0.1-1.el7.x86_64.rpm  
+#install helloworld
+#ls -l /etc/yum.repos.d/                             
+#ls to see the repos
 vim /etc/yum.repos.d/epel.repo
 
 cp /root/rpmbuild/RPMS/x86_64/helloworld-0.1-1.el7.x86_64.rpm /home/dara_ung/  
 chown dara_ung /home/dara_ung/helloworld-0.1-1.el7.x86_64.rpm 
+#compy the file x86_64.rmp and change the own for the files to dara_ung.
+
 
