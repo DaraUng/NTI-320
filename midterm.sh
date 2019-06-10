@@ -14,16 +14,16 @@ gcloud compute instances create reposrv \
 --metadata-from-file startup-script=NTI-320/reposrv.sh
 --private-network-ip=10.128.0.5
 
-echo "creating cacti"
-#cacti
-gcloud compute instances create cacti-install \
+echo "creating buildsrv"
+#reposrv
+gcloud compute instances create buildsrv \
 --image-family centos-7 \
 --image-project centos-cloud \
 --zone us-west1-b \
 --tags "http-server","https-server" \
 --machine-type f1-micro \
 --scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/cacti-install.sh
+--metadata-from-file startup-script=NTI-320/buildsrv.sh
 
 echo "creating nagios-install"
 #nagios
@@ -35,6 +35,61 @@ gcloud compute instances create nagios-install \
 --machine-type f1-micro \
 --scopes cloud-platform \
 --metadata-from-file startup-script=NTI-320/nagios-install.sh
+
+echo "creating cacti"
+#cacti
+gcloud compute instances create cacti-install \
+--image-family centos-7 \
+--image-project centos-cloud \
+--zone us-west1-b \
+--tags "http-server","https-server" \
+--machine-type f1-micro \
+--scopes cloud-platform \
+--metadata-from-file startup-script=NTI-320/cacti-install.sh
+
+echo "creating rsyslog"
+#rsyslog
+gcloud compute instances create rsyslog \
+--image-family centos-7 \
+--image-project centos-cloud \
+--zone us-west1-b \
+--tags "http-server","https-server" \
+--machine-type f1-micro \
+--scopes cloud-platform \
+--metadata-from-file startup-script=NTI-320/rsyslog.sh
+
+echo "creating ldap-server"
+#LDAP-server
+gcloud compute instances create ldap-server \
+--image-family centos-7 \
+--image-project centos-cloud \
+--zone us-west1-b \
+--tags "http-server","https-server" \
+--machine-type f1-micro \
+--scopes cloud-platform \
+--metadata-from-file startup-script=NTI-320/ldap-server.sh
+
+echo "creating nfs"
+#NSF-a
+gcloud compute instances create nfs \
+--image-family centos-7 \
+--image-project centos-cloud \
+--zone us-west1-b \
+--tags "http-server","https-server" \
+--machine-type f1-micro \
+--scopes cloud-platform \
+--metadata-from-file startup-script=NTI-320/nfs.sh
+
+echo "creating django"
+#Django
+gcloud compute instances create django \
+--image-family centos-7 \
+--image-project centos-cloud \
+--zone us-west1-b \
+--tags "http-server","https-server" \
+--machine-type f1-micro \
+--scopes cloud-platform \
+--metadata-from-file startup-script=NTI-320/django.sh
 
 echo "creating nrpe.sh"
 #nrpe
@@ -57,51 +112,6 @@ gcloud compute instances create postgres \
 --machine-type f1-micro \
 --scopes cloud-platform \
 --metadata-from-file startup-script=NTI-320/postgres.sh
-
-echo "creating ldap-server"
-#LDAP-server
-gcloud compute instances create ldap-server \
---image-family centos-7 \
---image-project centos-cloud \
---zone us-west1-b \
---tags "http-server","https-server" \
---machine-type f1-micro \
---scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/ldap-server.sh
-
-echo "creating nfs-a"
-#NSF-a
-gcloud compute instances create nfs \
---image-family centos-7 \
---image-project centos-cloud \
---zone us-west1-b \
---tags "http-server","https-server" \
---machine-type f1-micro \
---scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/nfs.sh
-
-echo "creating django"
-#Django
-gcloud compute instances create django \
---image-family centos-7 \
---image-project centos-cloud \
---zone us-west1-b \
---tags "http-server","https-server" \
---machine-type f1-micro \
---scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/django.sh
-
-echo "creating rsyslog"
-#rsyslog
-gcloud compute instances create rsyslog \
---image-family centos-7 \
---image-project centos-cloud \
---zone us-west1-b \
---tags "http-server","https-server" \
---machine-type f1-micro \
---scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/rsyslog.sh
-
 
 echo "creating client-c"
 #LDAP
