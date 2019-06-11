@@ -8,3 +8,7 @@ systemctl enable rsyslog
 
 systemctl restart rsyslog
 echo "*.* @@rsyslog-03-07:514" >> /etc/rsyslog.conf
+
+
+
+#if the forloop does not work. Copy and paste these lines into all of the server.
