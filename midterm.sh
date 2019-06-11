@@ -11,7 +11,7 @@ gcloud compute instances create reposrv \
 --tags "http-server","https-server" \
 --machine-type f1-micro \
 --scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/reposrv.sh
+--metadata-from-file startup-script=NTI-320/reposrv.sh \
 --private-network-ip=10.138.0.19
 
 echo "creating buildsrv"
@@ -34,7 +34,7 @@ gcloud compute instances create nagios-install \
 --tags "http-server","https-server" \
 --machine-type f1-micro \
 --scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/nagios-install.sh
+--metadata-from-file startup-script=NTI-320/nagios-install.sh \
 --private-network-ip=10.138.0.46
 
 echo "creating cacti"
@@ -57,7 +57,7 @@ gcloud compute instances create rsyslog \
 --tags "http-server","https-server" \
 --machine-type f1-micro \
 --scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/rsyslog.sh
+--metadata-from-file startup-script=NTI-320/rsyslog.sh \
 --private-network-ip=10.138.0.56
 
 echo "creating ldap-server"
