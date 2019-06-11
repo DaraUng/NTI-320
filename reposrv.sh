@@ -1,7 +1,7 @@
 #!/bin/bash
 # this is a script to add a yum repo on a given server.
 
-ip="10.128.0.5"                                                    # make sure the address is a static ip adress.
+ip="10.138.0.19"                                                    # make sure the address is a static ip adress.
 
 echo "[nti-320]
 name=Extra Packages for Centos from NTI-320 7 - $basearch
