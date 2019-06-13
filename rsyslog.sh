@@ -19,13 +19,3 @@ sed -i 's/#$InputTCPServerRun 514/$InputTCPServerRun 514/g' /etc/rsyslog.conf
 
 systemctl restart rsyslog
 systemctl status rsyslog
-
-#client automation (postgres-a):
-#yum -y update && yum -y install rsyslog
-#systemctl start rsyslog
-#systemctl enable rsyslog
-
-#systemctl restart rsyslog
-#echo "*.* @@rsyslog-03-07:514" >> /etc/rsyslog.conf
-
-#tail -F /var/log/messages
