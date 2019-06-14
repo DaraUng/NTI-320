@@ -11,7 +11,7 @@ gcloud compute instances create reposrv \
 --tags "http-server","https-server" \
 --machine-type f1-micro \
 --scopes cloud-platform \
---metadata-from-file startup-script=NTI-320/repoclient.sh \
+--metadata-from-file startup-script=NTI-320/reposrv.sh \
 --private-network-ip=10.138.0.19
 
 echo "creating buildsrv"
