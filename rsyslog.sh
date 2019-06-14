@@ -2,7 +2,7 @@
 #!/bin/bash
 #https://www.tecmint.com/install-rsyslog-centralized-logging-in-centos-ubuntu/
 
-sudo su yum -y update && yum -y install rsyslog
+sudo yum -y update && yum -y install rsyslog
 
 systemctl start rsyslog
 systemctl enable rsyslog
