@@ -1,14 +1,22 @@
 #!/bin/bash
-#https://www.tecmint.com/install-rsyslog-centralized-logging-in-centos-ubuntu/
-yum -y update && yum -y install rsyslog
+
+#purpose: central location for server information/logs
+
+yum update -y
+yum install -y rsyslog
+yum install -y net-tools
+
 systemctl start rsyslog
 systemctl enable rsyslog
-#copy the rsyslog.conf to .bak
-cp /etc/rsyslog.conf /etc/rsyslog.conf.bak
-#Search for the ####### and replace with ##### in the /etc/rsyslog.conf
-sed -i 's/#\$ModLoad imudp/\$ModLoad imudp/g' /etc/rsyslog.conf
-sed -i 's/#\$UDPServerRun 514/\$UDPServerRun 514/g' /etc/rsyslog.conf
-sed -i 's/#\$ModLoad imtcp/\$ModLoad imtcp/g' /etc/rsyslog.conf
-sed -i 's/#\$InputTCPServerRun 514/\$InputTCPServerRun 514/g' /etc/rsyslog.conf
+
+#To configure rsyslog as a network/central logging server, 
+#you need to set the protocol (either UDP or TCP or both) it 
+#will use for remote syslog reception as well as the port it listens on.
+sed -i 's/#$ModLoad imudp/$ModLoad imudp/g' /etc/rsyslog.conf
+sed -i 's/#$ModLoad imtcp/$ModLoad imtcp/g' /etc/rsyslog.conf
+sed -i 's/#$InputTCPServerRun 514/$InputTCPServerRun 514/g' /etc/rsyslog.conf
+sed -i 's/#$UDPServerRun 514/$UDPServerRun 514/g' /etc/rsyslog.conf
+
 systemctl restart rsyslog
-systemctl status rsyslog
+
+netstat -antup | grep 514
