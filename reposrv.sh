@@ -4,6 +4,8 @@ yum -y install createrepo                                                       
 
 mkdir -p /repos/centos/7/extras/x86_64/Packages/                                   # Make your repo dir
 
+cp nti-320-plugins-0.1-1.el7.x86_64.rpm
+
 createrepo --update /repos/centos/7/extras/x86_64/Packages/                        # Update after every change
 
 
